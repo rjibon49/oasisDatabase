@@ -48,4 +48,75 @@ const getUsers = async(req, res) => {
     }
 }
 
-module.exports = { createUser, getUsers};
+const getUserById = async(req, res) => {
+    try {
+        const response = await User.findOne({
+            attributes:['uuid','name','email','phoneNumber','role'],
+            where: {
+                uuid: req.params.id
+            }
+        });
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({ message: 'User Not Found' });
+    }
+}
+
+const updateUser = async(req, res) => {
+    const user = await User.findOne({
+        where: {
+            uuid: req.params.id
+        }
+    });
+    if(!user) return res.status(404).json({msg: "User not found"});
+
+    const {name, email, password, confirmPassword, phoneNumber, role} = req.body;
+
+    let hashPassword;
+    if(password === "" || password === null) {
+        hashPassword = user.password
+    } else {
+        const saltround = 10;
+        hashPassword = await bcrypt.hash(password, saltround);
+    }
+    if(password !== confirmPassword) return res.status(400).json({msg: "Password did not match"});
+    try {
+        await User.update({
+            name,
+            email,
+            password: hashPassword,
+            role,
+            phoneNumber
+        }, {
+            where: {
+                id: user.id
+            }
+        });
+        res.status(200).json({msg: "User information Update"});
+    } catch(error) {
+        res.status(400).json({msg:"User information did not update"})
+    }
+}
+
+const deleteUser = async(req, res) => {
+    const user = await User.findOne({
+        where: {
+            uuid: req.params.id
+        }
+    });
+    if(!user) return res.status(400).json({msg:"User not found"});
+    try{
+        await User.destroy({
+            where:{
+                id: user.id
+            }
+        });
+        res.status(200).json({msg: "User Delete Successfully"});
+    } catch(error) {
+        res.status(400).json({msg:"User did not delete"})
+    }
+}
+
+
+
+module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser};

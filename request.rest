@@ -9,3 +9,30 @@ Content-Type: application/json
     "confirmPassword": "123456",
     "role": "admin"
 }
+
+
+###
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "rjibon49@gmail.com",
+    "password": "123446",
+}
+
+###
+GET http://localhost:5000/users
+
+{
+    "email": "rjibon49@gmail.com",
+    "password": "123457"
+}
+
+
+###
+DELETE  http://localhost:5000/logout
+
+{
+    "email": "rjibon49@gmail.com",
+    "password": "123457"
+}

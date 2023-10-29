@@ -1,6 +1,7 @@
 const User = require("../models/UserModel.js");
 const bcrypt = require("bcrypt");
 
+
 const Login = async (req, res) => {
     const user = await User.findOne({
         where: {
@@ -19,4 +20,28 @@ const Login = async (req, res) => {
     res.status(200).json({ uuid, name, email, phoneNumber, role });
 }
 
-module.exports = {Login};
+
+const Me = async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({msg:"Please login"})
+    }
+    const user = await User.findOne({
+        attributes:['uuid', 'name', 'email', 'phoneNumber', 'role'],
+        where: {
+            uuid: req.session.userId
+        }
+    });
+    if (!user) return res.status(404).json ({msg: "User not found"});
+    res.status(200).json(user);
+}
+
+
+const LogOut = (req, res) => {
+    req.session.destroy((err) => {
+        if(err) return res.status(400).json({msg: "Unable to log out"});
+        res.status(200).json({msg: "You have logged out"});
+    });
+}
+
+
+module.exports = {Login, Me, LogOut};

@@ -17,21 +17,21 @@ const sessionStore = new SequelizeStore({
     db: db,
 });
 
-(async()=>{
-    await db.sync({ alter: true }), { force: true };
-})();
+// (async()=>{
+//     await db.sync({ alter: true }), { force: true };
+// })();
 
-// app.use(
-//     session({
-//         secret: process.env.SESS_SECRET,
-//         resave: false,
-//         saveUninitialized: true,
-//         store: sessionStore,
-//         cookie: {
-//         secure: "auto",
-//         },
-//     })
-// );
+app.use(
+    session({
+        secret: process.env.SESS_SECRET,
+        resave: false,
+        saveUninitialized: true,
+        store: sessionStore,
+        cookie: {
+        secure: "auto",
+        },
+    })
+);
 
 
 // Enable CORS for all routes
