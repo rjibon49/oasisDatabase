@@ -85,15 +85,15 @@ const getDoctorProfiles = async (req, res) => {
 // Get Doctor Profile By ID
 
 const getDoctorProfileById = async (req, res) => {
-    const { id } = req.params; // Assuming the patient ID is passed as a route parameter
-    
+    const { id } = req.params;
+
     if (isNaN(id)) {
         return res.status(400).json({ message: 'Invalid ID format' });
     }
 
     try {
         const doctorProfile = await DoctorProfile.findOne({
-            where: { doctorProfileId: id }, // Adjust the field based on your model
+            where: { doctorProfileId: id },
             include: [{
                 model: User,
                 attributes: ['userId', 'username', 'email', 'role'],
@@ -106,7 +106,7 @@ const getDoctorProfileById = async (req, res) => {
 
         return res.status(200).json(doctorProfile);
     } catch (error) {
-        console.error('Error fetching Doctro profile:', error);
+        console.error('Error fetching Doctor profile:', error);
         return res.status(500).json({ message: 'Failed to fetch Doctor profile' });
     }
 };

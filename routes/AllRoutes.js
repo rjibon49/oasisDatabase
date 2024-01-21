@@ -28,10 +28,10 @@ router.delete('/logout', logout);
 // User-related routes
 router.post('/users', createUser);
 router.get('/users', verifyUser, getUsers);
-router.get('/users/:id', adminOnly, getUserById);
-router.put('/users/:id', adminOnly, updateUser);
-router.put('/users/:id/update-status', adminOnly, updateUserstatus);
-router.delete('/users/:id', adminOnly, deleteUser);
+router.get('/users/:id', getUserById);
+router.put('/users/:id',  updateUser);
+router.put('/users/:id/update-status',  updateUserstatus);
+router.delete('/users/:id',  deleteUser);
 
 // Patient Profile
 // Create patient profile route
@@ -39,9 +39,9 @@ router.post('/create-patient-profile', createPatientProfile);
 // Update patient profile route
 router.put('/update-patient-profile', updatePatientProfile);
 // Get all patient profile 
-router.get('/all-patient-profile', adminOnly, getPatientProfiles);
+router.get('/all-patient-profile',  getPatientProfiles);
 // Get patient profile by ID
-router.get('/all-patient-profile/:id', adminOnly, getPatientProfileById);
+router.get('/all-patient-profile/:id',  getPatientProfileById);
 
 
 
@@ -49,36 +49,36 @@ router.get('/all-patient-profile/:id', adminOnly, getPatientProfileById);
 // Create Doctor Profile
 router.post('/createdoctorprofile', createDoctorProfile);
 // Update Doctor Profile
-router.put('/update-doctor-profile', updateDoctorProfile);
+router.put('/updatedoctorprofile/:id', updateDoctorProfile);
 // Get all patient profile 
-router.get('/all-doctor-profile', adminOnly, getDoctorProfiles);
+router.get('/viewalldoctorprofiles', getDoctorProfiles);
 // Get patient profile by ID
-router.get('/all-doctor-profile/:id', adminOnly, getDoctorProfileById);
+router.get('/viewdoctorprofile/:id', getDoctorProfileById);
 
 
 // Admin Profile
 // Create Admin Profile
-router.post('/create-admin-profile', adminOnly, createAdminProfile);
+router.post('/create-admin-profile',  createAdminProfile);
 // Update Admin Profile
-router.put('/update-admin-profile', adminOnly, updateAdminProfile);
+router.put('/update-admin-profile',  updateAdminProfile);
 // Get all Admin profile 
-router.get('/all-admin-profile', adminOnly, getAdminProfiles);
+router.get('/all-admin-profile',  getAdminProfiles);
 // Get Admin profile by ID
-router.get('/all-admin-profile/:id', adminOnly, getAdminProfileById);
+router.get('/all-admin-profile/:id',  getAdminProfileById);
 
 // All Profile
 // Get all profiles
-router.get('/all-profiles', adminOnly, getAllProfiles);
+router.get('/all-profiles',  getAllProfiles);
 // Get profile By Id
-router.get('/all-profiles/:profileType/:id', adminOnly, getProfileById);
+router.get('/all-profiles/:profileType/:id',  getProfileById);
 
 
 // Schedule routes
 router.post('/schedule', createSchedule);
-router.get('/schedules', adminOnly, getAllSchedules);
-router.get('/schedules/:id', adminOnly, getScheduleById);
-router.put('/schedules/:id', adminOnly, updateScheduleById);
-router.delete('/schedules/:id', adminOnly, deleteScheduleById);
+router.get('/schedules',  getAllSchedules);
+router.get('/schedules/:id',  getScheduleById);
+router.put('/schedules/:id',  updateScheduleById);
+router.delete('/schedules/:id',  deleteScheduleById);
 
 
 // Appointment routes

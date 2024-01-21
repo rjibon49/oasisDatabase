@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
-const { User } = require('../models/AllModel');
+const { User, DoctorProfile, PatientProfile, AdminProfile, Schedule, Appointment, DoctorReview, Notification } = require('../models/AllModel');
+
 
 const createUser = async (req, res) => {
     const { username, email, password, confirmPassword, role } = req.body;
@@ -44,6 +45,11 @@ const getUsers = async (req, res) => {
     try {
         const response = await User.findAll({
             attributes: ['userId', 'username', 'email', 'role'],
+            include: [
+                { model: DoctorProfile, include: [Schedule, DoctorReview] },
+                { model: PatientProfile, include: [Appointment] },
+                AdminProfile,
+            ],
             order: [['userId', 'DESC']],
         });
         res.status(200).json({ success: true, data: response });
@@ -55,8 +61,7 @@ const getUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        const response = await User.findOne({
-            attributes: ['userId', 'username', 'email', 'role'],
+        const userInformation = await User.findOne({
             where: {
                 [Op.or]: [
                     { userId: req.params.id },
@@ -64,62 +69,31 @@ const getUserById = async (req, res) => {
                     { email: req.params.id },
                 ],
             },
+            include: [
+                {
+                    model: DoctorProfile,
+                    include: [Schedule, DoctorReview],
+                },
+                {
+                    model: PatientProfile,
+                    include: [Appointment],
+                },
+                AdminProfile,
+            ],
         });
 
-        if (!response) {
+        if (!userInformation) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        res.status(200).json({ success: true, data: response });
+        res.status(200).json({ success: true, data: userInformation });
     } catch (error) {
-        console.error('Error fetching user:', error);
-        res.status(500).json({ success: false, message: 'Error fetching user' });
+        console.error('Error fetching user information:', error);
+        res.status(500).json({ success: false, message: 'Error fetching user information' });
     }
 };
 
-// const updateUser = async (req, res) => {
-//     try {
-//         const user = await User.findOne({
-//             where: {
-//                 [Op.or]: [
-//                     { userId: req.params.id },
-//                     { username: req.params.id },
-//                     { email: req.params.id },
-//                 ],
-//             },
-//         });
 
-//         if (!user) {
-//             return res.status(404).json({ success: false, message: "User not found" });
-//         }
-
-//         const { password, confirmPassword } = req.body;
-
-//         if (password && password !== confirmPassword) {
-//             return res.status(400).json({ success: false, message: "Passwords do not match" });
-//         }
-
-//         if (password) {
-//             const saltround = 10;
-//             const hashpassword = await bcrypt.hash(password, saltround);
-
-//             await User.update({
-//                 password: hashpassword,
-//             }, {
-//                 where: {
-//                     userId: user.userId,
-//                 },
-//             });
-
-//             return res.status(200).json({ success: true, message: "Password updated successfully" });
-//         }
-
-//         return res.status(400).json({ success: false, message: "Password is required for update" });
-//     } catch (error) {
-//         console.error('Error updating user information:', error);
-//         return res.status(500).json({ success: false, message: "Error updating user information" });
-//     }
-// };
 const updateUser = async (req, res) => {
     try {
         // Find the user by userId, username, or email
@@ -189,35 +163,6 @@ const updateUserstatus = async (req, res) => {
     }
 };
 
-// const deleteUser = async (req, res) => {
-//     try {
-//         const user = await User.findOne({
-//             where: {
-//                 [Op.or]: [
-//                     { userId: req.params.id },
-//                     { username: req.params.id },
-//                     { email: req.params.id },
-//                 ],
-//             },
-//         });
-
-//         if (!user) {
-//             return res.status(404).json({ success: false, message: "User not found" });
-//         }
-
-//         await User.destroy({
-//             where: {
-//                 userId: user.userId,
-//             },
-//         });
-
-//         res.status(200).json({ success: true, message: "User deleted successfully" });
-//     } catch (error) {
-//         console.error('Error deleting user:', error);
-//         res.status(500).json({ success: false, message: "Error deleting user" });
-//     }
-// };
-
 const deleteUser = async (req, res) => {
     try {
         // Find the user by userId, username, or email
@@ -251,3 +196,115 @@ const deleteUser = async (req, res) => {
 
 
 module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, updateUserstatus };
+
+
+
+// const getUsers = async (req, res) => {
+//     try {
+//         const response = await User.findAll({
+//             attributes: ['userId', 'username', 'email', 'role'],
+//             order: [['userId', 'DESC']],
+//         });
+//         res.status(200).json({ success: true, data: response });
+//     } catch (error) {
+//         console.error('Error fetching users:', error);
+//         res.status(500).json({ success: false, message: 'Error fetching users' });
+//     }
+// };
+
+// const getUserById = async (req, res) => {
+//     try {
+//         const response = await User.findOne({
+//             attributes: ['userId', 'username', 'email', 'role'],
+//             where: {
+//                 [Op.or]: [
+//                     { userId: req.params.id },
+//                     { username: req.params.id },
+//                     { email: req.params.id },
+//                 ],
+//             },
+//         });
+
+//         if (!response) {
+//             return res.status(404).json({ success: false, message: 'User not found' });
+//         }
+
+//         res.status(200).json({ success: true, data: response });
+//     } catch (error) {
+//         console.error('Error fetching user:', error);
+//         res.status(500).json({ success: false, message: 'Error fetching user' });
+//     }
+// };
+
+// const updateUser = async (req, res) => {
+//     try {
+//         const user = await User.findOne({
+//             where: {
+//                 [Op.or]: [
+//                     { userId: req.params.id },
+//                     { username: req.params.id },
+//                     { email: req.params.id },
+//                 ],
+//             },
+//         });
+
+//         if (!user) {
+//             return res.status(404).json({ success: false, message: "User not found" });
+//         }
+
+//         const { password, confirmPassword } = req.body;
+
+//         if (password && password !== confirmPassword) {
+//             return res.status(400).json({ success: false, message: "Passwords do not match" });
+//         }
+
+//         if (password) {
+//             const saltround = 10;
+//             const hashpassword = await bcrypt.hash(password, saltround);
+
+//             await User.update({
+//                 password: hashpassword,
+//             }, {
+//                 where: {
+//                     userId: user.userId,
+//                 },
+//             });
+
+//             return res.status(200).json({ success: true, message: "Password updated successfully" });
+//         }
+
+//         return res.status(400).json({ success: false, message: "Password is required for update" });
+//     } catch (error) {
+//         console.error('Error updating user information:', error);
+//         return res.status(500).json({ success: false, message: "Error updating user information" });
+//     }
+// };
+
+// const deleteUser = async (req, res) => {
+//     try {
+//         const user = await User.findOne({
+//             where: {
+//                 [Op.or]: [
+//                     { userId: req.params.id },
+//                     { username: req.params.id },
+//                     { email: req.params.id },
+//                 ],
+//             },
+//         });
+
+//         if (!user) {
+//             return res.status(404).json({ success: false, message: "User not found" });
+//         }
+
+//         await User.destroy({
+//             where: {
+//                 userId: user.userId,
+//             },
+//         });
+
+//         res.status(200).json({ success: true, message: "User deleted successfully" });
+//     } catch (error) {
+//         console.error('Error deleting user:', error);
+//         res.status(500).json({ success: false, message: "Error deleting user" });
+//     }
+// };

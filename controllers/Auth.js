@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { User } = require("../models/AllModel");
+const { User, DoctorProfile } = require("../models/AllModel");
 const bcrypt = require("bcrypt");
 
 const login = async (req, res) => {
@@ -41,6 +41,13 @@ const Me = async (req, res) => {
 
         const user = await User.findOne({
             attributes: ['userId', 'email', 'username', 'role'],
+            include: [
+                {
+                    model: DoctorProfile,
+                    attributes: ['name', 'phoneNumber', 'address', 'specialization', 'education', 'licenseNumber'],
+                },
+                // Add other associations as needed
+            ],
             where: {
                 userId: req.session.userId,
             },
@@ -54,9 +61,36 @@ const Me = async (req, res) => {
 
         return res.status(200).json(user);
     } catch (error) {
+        console.error('Error fetching user information:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+
+// const Me = async (req, res) => {
+//     try {
+//         if (!req.session || !req.session.userId) {
+//             return res.status(401).json({ message: 'Please log in' });
+//         }
+
+//         const user = await User.findOne({
+//             attributes: ['userId', 'email', 'username', 'role'],
+//             where: {
+//                 userId: req.session.userId,
+//             },
+//         });
+
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+
+//         console.log('User Object:', user);
+
+//         return res.status(200).json(user);
+//     } catch (error) {
+//         return res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
 
 const logout = (req, res) => {
     try {
@@ -114,6 +148,33 @@ module.exports = { login, Me, logout };
 // //     }
 
 // // };
+
+
+
+// const Me = async (req, res) => {
+//     try {
+//         if (!req.session || !req.session.userId) {
+//             return res.status(401).json({ message: 'Please log in' });
+//         }
+
+//         const user = await User.findOne({
+//             attributes: ['userId', 'email', 'username', 'role'],
+//             where: {
+//                 userId: req.session.userId,
+//             },
+//         });
+
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+
+//         console.log('User Object:', user);
+
+//         return res.status(200).json(user);
+//     } catch (error) {
+//         return res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
 
 // const login = async (req, res) => {
 //     const { identifier, password } = req.body;
