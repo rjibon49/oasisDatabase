@@ -26,7 +26,7 @@ const login = async (req, res) => {
 
         console.log('User ID set in session:', req.session.userId);
 
-        return res.status(200).json({ userId: user.userId, email: user.email, role: user.role, username: user.username });
+        return res.status(200).json({ userId: user.userId, name: user.name, username: user.username, email: user.email, role: user.role });
     } catch (error) {
         console.error("Error during login", error);
         return res.status(500).json({ message: "Internal server error" });
@@ -40,11 +40,11 @@ const Me = async (req, res) => {
         }
 
         const user = await User.findOne({
-            attributes: ['userId', 'email', 'username', 'role'],
+            attributes: ['userId', 'name', 'email', 'username', 'role'],
             include: [
                 {
                     model: DoctorProfile,
-                    attributes: ['name', 'phoneNumber', 'address', 'specialization', 'education', 'licenseNumber'],
+                    attributes: ['phoneNumber', 'address', 'specialization', 'education', 'licenseNumber'],
                 },
                 // Add other associations as needed
             ],

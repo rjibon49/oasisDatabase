@@ -4,7 +4,7 @@ const { User, DoctorProfile, PatientProfile, AdminProfile, Schedule, Appointment
 
 
 const createUser = async (req, res) => {
-    const { username, email, password, confirmPassword, role } = req.body;
+    const { name, username, email, password, confirmPassword, role } = req.body;
 
     try {
         const existingUser = await User.findOne({
@@ -28,6 +28,7 @@ const createUser = async (req, res) => {
         const hashpassword = await bcrypt.hash(password, saltround);
 
         await User.create({
+            name,
             username,
             email,
             password: hashpassword,
@@ -44,7 +45,7 @@ const createUser = async (req, res) => {
 const getUsers = async (req, res) => {
     try {
         const response = await User.findAll({
-            attributes: ['userId', 'username', 'email', 'role'],
+            attributes: ['userId', 'name', 'username', 'email', 'role'],
             include: [
                 { model: DoctorProfile, include: [Schedule, DoctorReview] },
                 { model: PatientProfile, include: [Appointment] },

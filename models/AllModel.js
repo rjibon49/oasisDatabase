@@ -12,6 +12,10 @@ const User = db.define('User', {
         allowNull: false,
         autoIncrement: true,
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     username: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -32,15 +36,15 @@ const User = db.define('User', {
     role: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'Patient',
+        defaultValue: 'patient',
         validate: {
-            isIn: [['Admin', 'Doctor', 'Patient']],
+            isIn: [['admin', 'doctor', 'patient']],
         },
     },
     status: {
-        type: DataTypes.ENUM('Active', 'Disabled'),
+        type: DataTypes.ENUM('active', 'disabled'),
         allowNull: false,
-        defaultValue: 'Active', // Set a default status
+        defaultValue: 'active', // Set a default status
     },
 });
 
@@ -51,10 +55,6 @@ const PatientProfile = db.define('PatientProfile', {
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
-    },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false,
     },
     phoneNumber: {
         type: DataTypes.STRING,
@@ -86,10 +86,6 @@ const DoctorProfile = db.define('DoctorProfile', {
         allowNull: false,
         autoIncrement: true,
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     phoneNumber: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -120,10 +116,6 @@ const AdminProfile = db.define('AdminProfile', {
         allowNull: false,
         autoIncrement: true,
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     phoneNumber: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -152,7 +144,7 @@ const Schedule = db.define('Schedule', {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            isIn: [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']],
+            isIn: [['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']],
         },
     },
     startTime: {
@@ -192,9 +184,9 @@ const Appointment = db.define('Appointment', {
         allowNull: false,
     },
     status: {
-        type: DataTypes.ENUM('Pending', 'Complete', 'Canceled'),
+        type: DataTypes.ENUM('pending', 'complete', 'canceled'),
         allowNull: false,
-        defaultValue: 'Pending',
+        defaultValue: 'pending',
     },
 });
 
@@ -258,9 +250,9 @@ const Payment = db.define('Payment', {
         allowNull: true,
     },
     status: {
-        type: DataTypes.ENUM('Pending', 'Completed', 'Failed'),
+        type: DataTypes.ENUM('pending', 'completed', 'failed'),
         allowNull: false,
-        defaultValue: 'Pending',
+        defaultValue: 'pending',
     },
 });
 
